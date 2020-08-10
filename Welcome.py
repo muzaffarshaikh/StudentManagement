@@ -1,19 +1,15 @@
 import cherrypy
 
+from AuthController import AuthController
+
+auth = AuthController
+
 
 class Welcome:
 
     @cherrypy.expose
     def index(self):
-        return '''
-            <html lang="en">
-            <div>
-            <h1>Student Management System</h1>
-            </div>
-            <input type="submit" value="Log In" />
-            <input type="submit" value="Sign Up" />
-            </html>
-        '''
+        return auth.get_loginform(self, username)
 
 
 if __name__ == '__main__':

@@ -85,19 +85,6 @@ class HomePage:
               padding: 20px;
             }
             
-            .fakeimg {
-              background-color: #aaa;
-              width: 100%;
-              padding: 20px;
-            }
-            
-            /* Footer */
-            .footer {
-              padding: 20px;
-              text-align: center;
-              background: #ddd;
-            }
-            
             @media screen and (max-width: 700px) {
               .row {   
                 flex-direction: column;
@@ -114,7 +101,7 @@ class HomePage:
             </head>
             <body>
             <div class="navbar">
-              <a href="#" class="active">Home</a>
+              <a href="get_loginform" class="active">Home</a>
               <a href="#">Link</a>
               <a href="#">Link</a>
               <a href="#" class="right">Link</a>

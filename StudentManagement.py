@@ -1,24 +1,127 @@
 import cherrypy
 import sqlite3
 
-databaseName = "starter.db"
+databaseName = "Database/students.db"
 
 
-# Inner class StudentManagement holds all our primary logic
 class StudentManagement(object):
 
-    # Displays the table created from generateStudentTable, as well
-    # as button prompts for adding/deleting students. It is our root page
     @cherrypy.expose
     def index(self):
-        return """<html><h2>Student Database</h2>""" + self.generateStudentTable() + """
-            <form method="get" action="new">
-              <button type="submit">Create new Student</button>
-            </form>
-            <form method="get" action="delete">
-              <button type="submit">Delete a Student</button>
-            </form>
-          </body>
+        return """
+        <html>
+            <head>
+            <title>Student Management System</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <style>
+            * {
+              box-sizing: border-box;
+            }
+            
+            body {
+              font-family: Arial, Helvetica, sans-serif;
+              margin: 0;
+            }
+            
+            .header {
+              padding: 80px;
+              text-align: center;
+              background: #1abc9c;
+              color: white;
+            }
+            
+            .header h1 {
+              font-size: 40px;
+            }
+            
+            .navbar {
+              overflow: hidden;
+              background-color: #333;
+              position: sticky;
+              position: -webkit-sticky;
+              top: 0;
+            }
+            
+            .navbar a {
+              float: left;
+              display: block;
+              color: white;
+              text-align: center;
+              padding: 14px 20px;
+              text-decoration: none;
+            }
+            
+            
+            .navbar a.right {
+              float: right;
+            }
+            
+            .navbar a:hover {
+              background-color: #ddd;
+              color: black;
+            }
+            
+            .navbar a.active {
+              background-color: #666;
+              color: white;
+            }
+            
+            .row {  
+              display: -ms-flexbox; /* IE10 */
+              display: flex;
+              -ms-flex-wrap: wrap; /* IE10 */
+              flex-wrap: wrap;
+            }
+            
+            .side {
+              -ms-flex: 30%; /* IE10 */
+              flex: 30%;
+              background-color: #f1f1f1;
+              padding: 20px;
+            }
+            
+            .main {   
+              -ms-flex: 70%; /* IE10 */
+              flex: 70%;
+              background-color: white;
+              padding: 20px;
+            }
+            
+            @media screen and (max-width: 700px) {
+              .row {   
+                flex-direction: column;
+              }
+            }
+            
+            @media screen and (max-width: 400px) {
+              .navbar a {
+                float: none;
+                width: 100%;
+              }
+            }
+            </style>
+            </head>
+            <body>
+                <div class="navbar">
+                  <a href="#"><i><b>Student<br>Management<br>System<b><i></a>
+                  <a href="#"><form method="get" action="new"><button type="submit">Create new Student</button></form></a>
+                  <a href="#"><form method="get" action="delete"><button type="submit">Delete a Student</button></form></a>
+                  
+                  
+                  <a href="#" class="right">Link</a>
+                </div>
+                <br>
+                """ + self.generateStudentTable() + """
+                <br>
+                <br>
+                    <form method="get" action="new">
+                      <button type="submit">Create new Student</button>
+                    </form>
+                    <form method="get" action="delete">
+                      <button type="submit">Delete a Student</button>
+                    </form>
+            </body>
         </html>"""
 
     # Displays all necessary prompts to create a new student in the table. The optional parameter
@@ -98,21 +201,20 @@ class StudentManagement(object):
     # This method is called in our index() method to create
     # our table of students from our SQL database
     def generateStudentTable(self):
-        # Creating top row
-        table = """<table style="width:50%">
-        <tr>
-            <th>Roll No.</th>
-            <th>P.R. Number</th>
-            <th>Name</th>
-            <th>GPA</th>
-            <th>Credit Hours</th>
-            <th>Gender</th>
-            <th>Phone</th>
-        </tr>"""
-        # Establishing connection to database
+        table = """
+                <table style="width:50%">
+                <tr>
+                    <th>Roll No.</th>
+                    <th>P.R. Number</th>
+                    <th>Name</th>
+                    <th>GPA</th>
+                    <th>Credit Hours</th>
+                    <th>Gender</th>
+                    <th>Phone</th>
+                </tr>
+        """
         conn = sqlite3.connect(databaseName)
         c = conn.cursor()
-        # Creating a row for each student, populating values
         for row in c.execute("SELECT * from Students"):
             rowData = """<tr>
             <td align="center">""" + str(row[1]) + """</td>
@@ -145,5 +247,4 @@ class StudentManagement(object):
 
 
 if __name__ == '__main__':
-    # Starting our webserver with StudentManagement's index method
     cherrypy.quickstart(StudentManagement(), '/')
