@@ -4,8 +4,8 @@ import sqlite3
 databaseName = "starter.db"
 
 
-# Inner class Starter holds all our primary logic
-class Starter(object):
+# Inner class StudentManagement holds all our primary logic
+class StudentManagement(object):
 
     # Displays the table created from generateStudentTable, as well
     # as button prompts for adding/deleting students. It is our root page
@@ -35,12 +35,18 @@ class Starter(object):
                     <form method="get" action="generateStudent">""" + optionalString + """
                         Name:<br>
                         <input type="text" value="" name="name" /><br>
-                        Student ID #:<br>
-                        <input type="number" value="" min="0" step="1" name="studentId"/><br>
+                        Roll Number #:<br>
+                        <input type="number" value="" min="0" step="1" name="rollno"/><br>
+                        P.R. Number #:<br>
+                        <input type="number" value="" min="0" step="1" name="pr"/><br>
                         GPA:<br>
                         <input type="text" value="" name="gpa"/><br>
                         Credit Hours:<br>
                         <input type="text" value="" name="creditHours"/><br><br>
+                        Gender:<br>
+                        <input type="text" value="" name="gender"/><br><br>
+                        Phone:<br>
+                        <input type="text" value="" name="phone"/><br><br>
                         <button type="submit" value="Submit">Submit</button>
                     </form>
                   </body>
@@ -57,8 +63,8 @@ class Starter(object):
         return """<html><body>
             <form method="get" action="removeStudent">""" + optionalString + """
                 <h3>Student Removal</h3>
-                Enter the ID # of the student you want removed:<br>
-                <input type="text" value="" name="studentId"/><br><br>
+                Enter the Roll Number # of the student you want removed:<br>
+                <input type="text" value="" name="rollno"/><br><br>
                 <button type="submit" value="Submit">Submit</button>
             </form>
         </body></html>"""
@@ -66,17 +72,24 @@ class Starter(object):
     # This method either adds a new student to the list and returns to the index() front page,
     # or it reloads the "new" page when pre-existing IDs are entered, this time with an error for the user
     @cherrypy.expose
-    def generateStudent(self, studentId, name, gpa, creditHours):
+    def generateStudent(self, rollno, pr, name, gpa, creditHours, gender, phone):
         conn = sqlite3.connect(databaseName)
         c = conn.cursor()
-        for row in c.execute("SELECT ID from Students"):
+        for row in c.execute("SELECT RollNo from Students"):
             # If a student already has the new ID, we make them try again
-            if int(row[0]) == int(studentId):
+            if int(row[0]) == int(rollno):
                 print("Invalid ID!")
-                return self.new(errorValue="A student with ID #" + str(studentId) + " already exists.")
+                return self.new(errorValue="A student with ID #" + str(rollno) + " already exists.")
         # If we have a unique ID, then we add the student to the database via SQL and return to the front page
-        c.execute("INSERT INTO Students VALUES ('" + str(name) + "'," + str(studentId) +
-                  "," + str(gpa) + "," + str(creditHours) + ")")
+        c.execute("INSERT INTO Students VALUES ('"
+                  + str(name) + "','"
+                  + str(rollno) + "','"
+                  + str(pr) + "','"
+                  + str(gpa) + "','"
+                  + str(creditHours) + "','"
+                  + str(gender) + "','"
+                  + str(phone) + "')"
+                  )
         conn.commit()
         conn.close()
 
@@ -88,10 +101,13 @@ class Starter(object):
         # Creating top row
         table = """<table style="width:50%">
         <tr>
+            <th>Roll No.</th>
+            <th>P.R. Number</th>
             <th>Name</th>
-            <th>ID</th>
             <th>GPA</th>
             <th>Credit Hours</th>
+            <th>Gender</th>
+            <th>Phone</th>
         </tr>"""
         # Establishing connection to database
         conn = sqlite3.connect(databaseName)
@@ -99,10 +115,13 @@ class Starter(object):
         # Creating a row for each student, populating values
         for row in c.execute("SELECT * from Students"):
             rowData = """<tr>
-            <td align="center">""" + str(row[0]) + """</td>
             <td align="center">""" + str(row[1]) + """</td>
             <td align="center">""" + str(row[2]) + """</td>
-            <td align="center">""" + str(row[3]) + """</td></tr>"""
+            <td align="center">""" + str(row[0]) + """</td>
+            <td align="center">""" + str(row[3]) + """</td>
+            <td align="center">""" + str(row[4]) + """</td>
+            <td align="center">""" + str(row[5]) + """</td>
+            <td align="center">""" + str(row[6]) + """</td></tr>"""
             table += rowData
         # Closing connection and wrapping up html with our return line
         conn.close()
@@ -111,20 +130,20 @@ class Starter(object):
     # This method either removes a student from the database and returns to the front page,
     # or it reprompts the "delete" page with an error when an invalid ID is entered
     @cherrypy.expose
-    def removeStudent(self, studentId):
+    def removeStudent(self, rollno):
         conn = sqlite3.connect(databaseName)
         c = conn.cursor()
-        for row in c.execute("SELECT ID from Students"):
+        for row in c.execute("SELECT RollNo from Students"):
             # If we find the student with that ID, we remove them and head back to the front page
-            if int(row[0]) == int(studentId):
-                c.execute("DELETE FROM Students WHERE ID = " + str(studentId))
+            if int(row[0]) == int(rollno):
+                c.execute("DELETE FROM Students WHERE RollNo = " + str(rollno))
                 conn.commit()
                 conn.close()
                 return self.index()
-        # If we never find a student with studentId, we reload the "delete" page with an error
-        return self.delete(errorValue="There is no student with an ID of #" + str(studentId) + ".")
+        # If we never find a student with rollno, we reload the "delete" page with an error
+        return self.delete(errorValue="There is no student with an Roll Number #" + str(rollno) + ".")
 
 
 if __name__ == '__main__':
-    # Starting our webserver with Starter's index method
-    cherrypy.quickstart(Starter(), '/')
+    # Starting our webserver with StudentManagement's index method
+    cherrypy.quickstart(StudentManagement(), '/')
