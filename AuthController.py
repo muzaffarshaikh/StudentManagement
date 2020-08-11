@@ -113,39 +113,41 @@ class AuthController(object):
         """Called on logout"""
 
     def get_loginform(self, username, msg="Enter login information", from_page="/"):
-        return """<html><head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <style type="text/css">
-        .box{
-            width:600px;
-            margin:0 auto;
-            border:1px solid #ccc;
-        }
-        </style>
-        </head>
-        <body>
-            <div class="form-group">
-                <h3 align="center">Sign In</h3>
-            </div>
-    
-            <form align="center" method="post" action="/auth/login">
-                
-            <input type="hidden" name="from_page" value="%(from_page)s" />
-        %(msg)s<br />
-    
-            <div class="form-group">
-                Username: <input type="text" name="username" value="%(username)s" /><br />
-            </div>
-            <div class="form-group">
-                Password: <input type="password" name="password" /><br />
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Log in" />
-            </div>
-            </form>
-        </body>
+        return """
+        <html>
+            <head>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <style type="text/css">
+            .box{
+                width:600px;
+                margin:0 auto;
+                border:1px solid #ccc;
+            }
+            </style>
+            </head>
+            <body>
+                <div class="form-group">
+                    <h3 align="center">Sign In</h3>
+                </div>
+        
+                <form align="center" method="post" action="/auth/login">
+                    
+                <input type="hidden" name="from_page" value="%(from_page)s" />
+            %(msg)s<br />
+        
+                <div class="form-group">
+                    Username: <input type="text" name="username" value="%(username)s" /><br />
+                </div>
+                <div class="form-group">
+                    Password: <input type="password" name="password" /><br />
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Log in" />
+                </div>
+                </form>
+            </body>
         </html>""" % locals()
 
     @cherrypy.expose

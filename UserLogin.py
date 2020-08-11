@@ -3,8 +3,6 @@ import cherrypy
 
 from AuthController import AuthController, require, member_of, name_is
 
-from StudentManagement import StudentManagement
-
 
 class RestrictedArea:
 
@@ -30,7 +28,7 @@ class Root:
     @cherrypy.expose
     @require()
     def index(self):
-        return StudentManagement.index
+        return """Welcome"""
 
 
 if __name__ == '__main__':

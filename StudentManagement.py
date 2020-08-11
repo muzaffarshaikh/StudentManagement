@@ -1,10 +1,54 @@
 import cherrypy
 import sqlite3
 
+from UserLogin import Root
+
+auth = Root
+
 databaseName = "Database/students.db"
 
 
 class StudentManagement(object):
+
+    @cherrypy.expose
+    def login(self):
+        return """
+                <html>
+                    <head>
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+                    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+                    <style type="text/css">
+                    .box{
+                        width:600px;
+                        margin:0 auto;
+                        border:1px solid #ccc;
+                    }
+                    </style>
+                    </head>
+                    <body>
+                        <div class="form-group">
+                            <h3 align="center">Sign In</h3>
+                        </div>
+
+                        <form align="center" method="post" action="/auth/login">
+
+                        <input type="hidden" name="from_page" value="%(from_page)s" />
+                    %(msg)s<br />
+
+                        <div class="form-group">
+                            Username: <input type="text" name="username" value="%(username)s" /><br />
+                        </div>
+                        <div class="form-group">
+                            Password: <input type="password" name="password" /><br />
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Log in" />
+                        </div>
+                        </form>
+                    </body>
+                </html>
+                """
 
     @cherrypy.expose
     def index(self):
@@ -87,6 +131,17 @@ class StudentManagement(object):
               background-color: white;
               padding: 20px;
             }
+            .btn {
+              border: none;
+              background-color: inherit;
+              padding: 0px 0px;
+              font-size: 16px;
+              cursor: pointer;
+              display: inline-block;
+            }
+            .btn-color-white {
+              color: white;
+            }
             
             @media screen and (max-width: 700px) {
               .row {   
@@ -104,12 +159,12 @@ class StudentManagement(object):
             </head>
             <body>
                 <div class="navbar">
-                  <a href="#"><i><b>Student<br>Management<br>System<b><i></a>
-                  <a href="#"><form method="get" action="new"><button type="submit">Create new Student</button></form></a>
-                  <a href="#"><form method="get" action="delete"><button type="submit">Delete a Student</button></form></a>
+                  <a align="center"><i><b>Student<br> Management<b><i></a>
+                  <a><form method="get" action="new"><button class="btn btn-color-white" type="submit">Create new Student</button></form></a>
+                  <a><form method="get" action="delete"><button class="btn btn-color-white" type="submit">Delete a Student</button></form></a>
                   
                   
-                  <a href="#" class="right">Link</a>
+                  <a href="#" class="right"><form method="get" action="new"><button class="btn btn-color-white" type="submit">Log Out</button></form></a>
                 </div>
                 <br>
                 """ + self.generateStudentTable() + """
@@ -133,27 +188,44 @@ class StudentManagement(object):
         if errorValue != "":
             optionalString = """<font color="red">""" + errorValue + """</font><br>"""
 
-        return """<html><body>
-                    <h3>Student Addition</h3>
+        return """
+        <html>
+            <head>
+            <style>
+            div.margin {
+              margin-left: 30px;
+            }
+            </style>
+            </head>
+            <body>
+                <h3>Enter Student Details</h3>
+                <div class="margin">
                     <form method="get" action="generateStudent">""" + optionalString + """
                         Name:<br>
-                        <input type="text" value="" name="name" /><br>
+                        <input type="text" value="" name="name" required/><br><br>
                         Roll Number #:<br>
-                        <input type="number" value="" min="0" step="1" name="rollno"/><br>
+                        <input type="number" value="" min="0" step="1" name="rollno" required/><br><br>
                         P.R. Number #:<br>
-                        <input type="number" value="" min="0" step="1" name="pr"/><br>
+                        <input type="number" value="" min="0" step="1" name="pr" required/><br><br>
                         GPA:<br>
-                        <input type="text" value="" name="gpa"/><br>
+                        <input type="text" value="" name="gpa" required/><br><br>
                         Credit Hours:<br>
-                        <input type="text" value="" name="creditHours"/><br><br>
-                        Gender:<br>
-                        <input type="text" value="" name="gender"/><br><br>
+                        <input type="text" value="" name="creditHours" required/><br><br>
+                        <label for="cars">Gender:</label>
+                            <select name="gender" id="gender" required>
+                              <option value=""></option>
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                              <option value="Others">Others</option>
+                            </select><br><br>
                         Phone:<br>
-                        <input type="text" value="" name="phone"/><br><br>
+                        <input type="text" value="" name="phone" required/><br><br>
                         <button type="submit" value="Submit">Submit</button>
                     </form>
-                  </body>
-                </html>"""
+                </div>
+            </body>
+        </html>
+        """
 
     # Displays a small dialog to decide which student to remove via ID value. Like the new() method,
     # this one has the optional parameter "errorValue" for displaying potential errors
@@ -202,28 +274,35 @@ class StudentManagement(object):
     # our table of students from our SQL database
     def generateStudentTable(self):
         table = """
-                <table style="width:50%">
-                <tr>
-                    <th>Roll No.</th>
-                    <th>P.R. Number</th>
-                    <th>Name</th>
-                    <th>GPA</th>
-                    <th>Credit Hours</th>
-                    <th>Gender</th>
-                    <th>Phone</th>
-                </tr>
+                <table width='100%' class='table table-striped table-bordered' cellspacing='5'>
+                    <thead>
+                        <tr>
+                            <th>Roll No.</th>
+                            <th>P.R. Number</th>
+                            <th>Name</th>
+                            <th>GPA</th>
+                            <th>Credit Hours</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                        </tr>
+                    </thead>
         """
         conn = sqlite3.connect(databaseName)
         c = conn.cursor()
         for row in c.execute("SELECT * from Students"):
-            rowData = """<tr>
-            <td align="center">""" + str(row[1]) + """</td>
-            <td align="center">""" + str(row[2]) + """</td>
-            <td align="center">""" + str(row[0]) + """</td>
-            <td align="center">""" + str(row[3]) + """</td>
-            <td align="center">""" + str(row[4]) + """</td>
-            <td align="center">""" + str(row[5]) + """</td>
-            <td align="center">""" + str(row[6]) + """</td></tr>"""
+            rowData = """
+                <tbody>
+                    <tr>
+                        <td align="center">""" + str(row[1]) + """</td>
+                        <td align="center">""" + str(row[2]) + """</td>
+                        <td align="center">""" + str(row[0]) + """</td>
+                        <td align="center">""" + str(row[3]) + """</td>
+                        <td align="center">""" + str(row[4]) + """</td>
+                        <td align="center">""" + str(row[5]) + """</td>
+                        <td align="center">""" + str(row[6]) + """</td>
+                    </tr>
+                </tbody>
+            """
             table += rowData
         # Closing connection and wrapping up html with our return line
         conn.close()
