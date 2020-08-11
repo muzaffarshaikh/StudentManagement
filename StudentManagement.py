@@ -3,8 +3,6 @@ import sqlite3
 
 from UserLogin import Root
 
-auth = Root
-
 databaseName = "Database/students.db"
 
 
@@ -13,169 +11,91 @@ class StudentManagement(object):
     @cherrypy.expose
     def login(self):
         return """
-                <html>
-                    <head>
-                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
-                    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-                    <style type="text/css">
-                    .box{
-                        width:600px;
-                        margin:0 auto;
-                        border:1px solid #ccc;
-                    }
-                    </style>
-                    </head>
-                    <body>
+        <html lang="en">
+            <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Student Management System - Login</title>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+            <style>
+                .login-form {
+                    width: 340px;
+                    margin: 50px auto;
+                }
+                .login-form form {
+                    margin-bottom: 15px;
+                    background: #f7f7f7;
+                    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+                    padding: 30px;
+                }
+                .login-form h2 {
+                    margin: 0 0 15px;
+                }
+                .form-control, .btn {
+                    min-height: 38px;
+                    border-radius: 2px;
+                }
+                .btn {        
+                    font-size: 15px;
+                    font-weight: bold;
+                }
+            </style>
+            </head>
+            <body>
+            <div class="login-form" style="width: 50%; float:left">
+            </div>
+            <div style="width: 50%; float:right">
+                <div class="login-form" >
+                    <form action="/examples/actions/confirmation.php" method="post">
+                        <h2 class="text-center">Log in</h2>       
                         <div class="form-group">
-                            <h3 align="center">Sign In</h3>
-                        </div>
-
-                        <form align="center" method="post" action="/auth/login">
-
-                        <input type="hidden" name="from_page" value="%(from_page)s" />
-                    %(msg)s<br />
-
-                        <div class="form-group">
-                            Username: <input type="text" name="username" value="%(username)s" /><br />
+                            <input type="text" class="form-control" placeholder="Username" required="required">
                         </div>
                         <div class="form-group">
-                            Password: <input type="password" name="password" /><br />
+                            <input type="password" class="form-control" placeholder="Password" required="required">
                         </div>
                         <div class="form-group">
-                            <input type="submit" value="Log in" />
-                        </div>
-                        </form>
-                    </body>
-                </html>
-                """
+                            <button type="submit" class="btn btn-primary btn-block">Log in</button>
+                        </div>        
+                    </form>
+                </div>
+            </div>
+            </body>
+        </html>                                		
+     """
 
     @cherrypy.expose
     def index(self):
         return """
         <html>
             <head>
-            <title>Student Management System</title>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <style>
-            * {
-              box-sizing: border-box;
-            }
-            
-            body {
-              font-family: Arial, Helvetica, sans-serif;
-              margin: 0;
-            }
-            
-            .header {
-              padding: 80px;
-              text-align: center;
-              background: #1abc9c;
-              color: white;
-            }
-            
-            .header h1 {
-              font-size: 40px;
-            }
-            
-            .navbar {
-              overflow: hidden;
-              background-color: #333;
-              position: sticky;
-              position: -webkit-sticky;
-              top: 0;
-            }
-            
-            .navbar a {
-              float: left;
-              display: block;
-              color: white;
-              text-align: center;
-              padding: 14px 20px;
-              text-decoration: none;
-            }
-            
-            
-            .navbar a.right {
-              float: right;
-            }
-            
-            .navbar a:hover {
-              background-color: #ddd;
-              color: black;
-            }
-            
-            .navbar a.active {
-              background-color: #666;
-              color: white;
-            }
-            
-            .row {  
-              display: -ms-flexbox; /* IE10 */
-              display: flex;
-              -ms-flex-wrap: wrap; /* IE10 */
-              flex-wrap: wrap;
-            }
-            
-            .side {
-              -ms-flex: 30%; /* IE10 */
-              flex: 30%;
-              background-color: #f1f1f1;
-              padding: 20px;
-            }
-            
-            .main {   
-              -ms-flex: 70%; /* IE10 */
-              flex: 70%;
-              background-color: white;
-              padding: 20px;
-            }
-            .btn {
-              border: none;
-              background-color: inherit;
-              padding: 0px 0px;
-              font-size: 16px;
-              cursor: pointer;
-              display: inline-block;
-            }
-            .btn-color-white {
-              color: white;
-            }
-            
-            @media screen and (max-width: 700px) {
-              .row {   
-                flex-direction: column;
-              }
-            }
-            
-            @media screen and (max-width: 400px) {
-              .navbar a {
-                float: none;
-                width: 100%;
-              }
-            }
-            </style>
+                <title>Student Management System</title>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
             </head>
             <body>
-                <div class="navbar">
-                  <a align="center"><i><b>Student<br> Management<b><i></a>
-                  <a><form method="get" action="new"><button class="btn btn-color-white" type="submit">Create new Student</button></form></a>
-                  <a><form method="get" action="delete"><button class="btn btn-color-white" type="submit">Delete a Student</button></form></a>
-                  
-                  
-                  <a href="#" class="right"><form method="get" action="new"><button class="btn btn-color-white" type="submit">Log Out</button></form></a>
-                </div>
+                <nav class="navbar navbar-inverse">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                          <a class="navbar-brand" href="#"><b>Student Management System</b></a>
+                        </div>
+                        <ul class="nav navbar-nav">
+                            <li><a href="new">Create Student</a></li>
+                            <li><a href="delete">Remove Student</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="login"><span class="glyphicon glyphicon-user"></span> Log Out</a></li>
+                        </ul>
+                    </div>
+                </nav>
                 <br>
                 """ + self.generateStudentTable() + """
-                <br>
-                <br>
-                    <form method="get" action="new">
-                      <button type="submit">Create new Student</button>
-                    </form>
-                    <form method="get" action="delete">
-                      <button type="submit">Delete a Student</button>
-                    </form>
             </body>
         </html>"""
 
@@ -191,15 +111,36 @@ class StudentManagement(object):
         return """
         <html>
             <head>
+            <title>Student Management System</title>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
             <style>
             div.margin {
-              margin-left: 30px;
+              margin-left: 50px;
             }
             </style>
             </head>
             <body>
-                <h3>Enter Student Details</h3>
+            <nav class="navbar navbar-inverse">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                          <a class="navbar-brand" href="#"><b>Student Management System</b></a>
+                        </div>
+                        <ul class="nav navbar-nav">
+                            <li><a href="new">Create Student</a></li>
+                            <li><a href="delete">Remove Student</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="login"><span class="glyphicon glyphicon-user"></span> Log Out</a></li>
+                        </ul>
+                    </div>
+                </nav>
+                
                 <div class="margin">
+                <h3>Enter Student Details</h3>
                     <form method="get" action="generateStudent">""" + optionalString + """
                         Name:<br>
                         <input type="text" value="" name="name" required/><br><br>
@@ -235,13 +176,45 @@ class StudentManagement(object):
         if errorValue != "":
             optionalString = """<font color="red">""" + errorValue + """</font><br>"""
 
-        return """<html><body>
+        return """<html>
+        
+        <head>
+            <title>Student Management System</title>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+            <style>
+            div.margin {
+              margin-left: 50px;
+            }
+            </style>
+            </head>
+            <nav class="navbar navbar-inverse">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                          <a class="navbar-brand" href="#"><b>Student Management System</b></a>
+                        </div>
+                        <ul class="nav navbar-nav">
+                            <li><a href="new">Create Student</a></li>
+                            <li><a href="delete">Remove Student</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="login"><span class="glyphicon glyphicon-user"></span> Log Out</a></li>
+                        </ul>
+                    </div>
+                </nav>
+                <body>
+            <div class="margin">
+            
             <form method="get" action="removeStudent">""" + optionalString + """
                 <h3>Student Removal</h3>
                 Enter the Roll Number # of the student you want removed:<br>
                 <input type="text" value="" name="rollno"/><br><br>
                 <button type="submit" value="Submit">Submit</button>
             </form>
+            </div>
         </body></html>"""
 
     # This method either adds a new student to the list and returns to the index() front page,
@@ -274,16 +247,27 @@ class StudentManagement(object):
     # our table of students from our SQL database
     def generateStudentTable(self):
         table = """
-                <table width='100%' class='table table-striped table-bordered' cellspacing='5'>
+        <html>
+            <head>
+              <title>Bootstrap Example</title>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+              <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+              <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+            </head>
+            <body>
+                <div class="container">
+                <table class="table table-bordered table-striped">
                     <thead>
-                        <tr>
-                            <th>Roll No.</th>
-                            <th>P.R. Number</th>
-                            <th>Name</th>
-                            <th>GPA</th>
-                            <th>Credit Hours</th>
-                            <th>Gender</th>
-                            <th>Phone</th>
+                        <tr class="info">
+                            <th align="center">Roll No.</th>
+                            <th align="center">P.R. Number</th>
+                            <th align="center">Name</th>
+                            <th align="center">GPA</th>
+                            <th align="center">Credit Hours</th>
+                            <th align="center">Gender</th>
+                            <th align="center">Phone</th>
                         </tr>
                     </thead>
         """
@@ -306,7 +290,7 @@ class StudentManagement(object):
             table += rowData
         # Closing connection and wrapping up html with our return line
         conn.close()
-        return table + "</table>"
+        return table + "</table></div></body></html>"
 
     # This method either removes a student from the database and returns to the front page,
     # or it reprompts the "delete" page with an error when an invalid ID is entered
