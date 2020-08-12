@@ -9,63 +9,14 @@ databaseName = "Database/students.db"
 class StudentManagement(object):
 
     @cherrypy.expose
-    def login(self):
-        return """
-        <html lang="en">
-            <head>
-            <meta charset="utf-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Student Management System - Login</title>
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
-            <style>
-                .login-form {
-                    width: 340px;
-                    margin: 50px auto;
-                }
-                .login-form form {
-                    margin-bottom: 15px;
-                    background: #f7f7f7;
-                    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-                    padding: 30px;
-                }
-                .login-form h2 {
-                    margin: 0 0 15px;
-                }
-                .form-control, .btn {
-                    min-height: 38px;
-                    border-radius: 2px;
-                }
-                .btn {        
-                    font-size: 15px;
-                    font-weight: bold;
-                }
-            </style>
-            </head>
-            <body>
-            <div class="login-form" style="width: 50%; float:left">
-            </div>
-            <div style="width: 50%; float:right">
-                <div class="login-form" >
-                    <form action="/examples/actions/confirmation.php" method="post">
-                        <h2 class="text-center">Log in</h2>       
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Username" required="required">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" class="form-control" placeholder="Password" required="required">
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block">Log in</button>
-                        </div>        
-                    </form>
-                </div>
-            </div>
-            </body>
-        </html>                                		
-     """
+    def loginFunction(self, uname, upass):
+        conn = sqlite3.connect(databaseName)
+        c = conn.cursor()
+        for row in c.execute("SELECT * from Users"):
+            if str(uname) == str(row[0]) & str(upass) == str(row[1]):
+                return self.delete
+            else:
+                return self.new
 
     @cherrypy.expose
     def index(self):
@@ -83,11 +34,12 @@ class StudentManagement(object):
                 <nav class="navbar navbar-inverse">
                     <div class="container-fluid">
                         <div class="navbar-header">
-                          <a class="navbar-brand" href="#"><b>Student Management System</b></a>
+                          <a class="navbar-brand" href="index"><b>Student Management System</b></a>
                         </div>
                         <ul class="nav navbar-nav">
                             <li><a href="new">Create Student</a></li>
                             <li><a href="delete">Remove Student</a></li>
+                            <li><a href="delete">Update Student Info.</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="login"><span class="glyphicon glyphicon-user"></span> Log Out</a></li>
@@ -132,44 +84,70 @@ class StudentManagement(object):
                         <ul class="nav navbar-nav">
                             <li><a href="new">Create Student</a></li>
                             <li><a href="delete">Remove Student</a></li>
+                            <li><a href="delete">Update Student Info.</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="login"><span class="glyphicon glyphicon-user"></span> Log Out</a></li>
                         </ul>
                     </div>
                 </nav>
-                
+                <div style="width: 50%; float:left">
+
                 <div class="margin">
-                <h3>Enter Student Details</h3>
-                    <form method="get" action="generateStudent">""" + optionalString + """
-                        Name:<br>
-                        <input type="text" value="" name="name" required/><br><br>
-                        Roll Number #:<br>
-                        <input type="number" value="" min="0" step="1" name="rollno" required/><br><br>
-                        P.R. Number #:<br>
-                        <input type="number" value="" min="0" step="1" name="pr" required/><br><br>
-                        GPA:<br>
-                        <input type="text" value="" name="gpa" required/><br><br>
-                        Credit Hours:<br>
-                        <input type="text" value="" name="creditHours" required/><br><br>
-                        <label for="cars">Gender:</label>
-                            <select name="gender" id="gender" required>
-                              <option value=""></option>
-                              <option value="Male">Male</option>
-                              <option value="Female">Female</option>
-                              <option value="Others">Others</option>
-                            </select><br><br>
-                        Phone:<br>
-                        <input type="text" value="" name="phone" required/><br><br>
-                        <button type="submit" value="Submit">Submit</button>
+                <h3><b>Enter Student Details</b></h3>
+                <br>
+                    <form method="post" action="generateStudent">""" + optionalString + """
+                    <div class="form-row">
+                        <div class="form-group ">
+                            <label>First Name:</label>
+                            <input type="text" class="form-control" placeholder="First name" name="fname" required>
+                        </div>
+                        <div class="form-group ">
+                            <label>Last Name:</label>
+                            <input type="text" class="form-control" placeholder="Last name" name="lname" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Roll. No</label>
+                            <input type="text" class="form-control" placeholder="Roll No." name="rollno" required>
+                        </div>
+                        <div class="form-group">
+                            <label>PR. No.</label>
+                            <input type="text" class="form-control" placeholder="PR. No." name="pr" required>
+                        </div>
+                        <div class="form-group">
+                            <label>GPA</label>
+                            <input type="text" class="form-control" placeholder="GPA" name="gpa" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Credit Hours</label>
+                            <input type="text" class="form-control" placeholder="Credit Hours" name="creditHours" required>
+                        </div>
+                        <div>
+                        <label>Gender</label><br>
+                            <input type="radio" id="Male" name="gender" value="Male">
+                            <label for="male">Male</label><br>
+                            <input type="radio" id="Female" name="gender" value="Female">
+                            <label for="female">Female</label><br>
+                            <input type="radio" id="Other" name="gender" value="Other">
+                            <label for="other">Other</label>
+                        <div>
+                        <div class="form-group">
+                            <label>Mobile No.</label>
+                            <input type="text" class="form-control" placeholder="Enter Mobile Number" name="phone" required>
+                        </div>
+                        
+                    </div>
+                        
+                        <button type="submit" value="Submit" class="btn btn-primary" style="float: right;">Submit</button>
+                        <br>
+                        <br><br><br>
                     </form>
+                </div>
                 </div>
             </body>
         </html>
         """
 
-    # Displays a small dialog to decide which student to remove via ID value. Like the new() method,
-    # this one has the optional parameter "errorValue" for displaying potential errors
     @cherrypy.expose
     def delete(self, errorValue=""):
         optionalString = ""
@@ -199,6 +177,7 @@ class StudentManagement(object):
                         <ul class="nav navbar-nav">
                             <li><a href="new">Create Student</a></li>
                             <li><a href="delete">Remove Student</a></li>
+                            <li><a href="delete">Update Student Info.</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="login"><span class="glyphicon glyphicon-user"></span> Log Out</a></li>
@@ -206,21 +185,25 @@ class StudentManagement(object):
                     </div>
                 </nav>
                 <body>
-            <div class="margin">
-            
-            <form method="get" action="removeStudent">""" + optionalString + """
-                <h3>Student Removal</h3>
-                Enter the Roll Number # of the student you want removed:<br>
-                <input type="text" value="" name="rollno"/><br><br>
-                <button type="submit" value="Submit">Submit</button>
-            </form>
+                
+            <div style="width: 30%; float:left">
+                <div class="margin">
+                <form method="post" action="removeStudent">""" + optionalString + """
+                    <h3><b>Deleting a Student from the System...</b></h3>
+                    <br>
+                    Enter the Roll Number of the student you want to delete : <br><br>
+                    <input type="text" class="form-control" placeholder="Enter Roll. No." name="rollno" required>
+                    <br>
+                    <button type="submit" value="Submit">Delete</button>
+                </form>
+                </div>
             </div>
         </body></html>"""
 
-    # This method either adds a new student to the list and returns to the index() front page,
-    # or it reloads the "new" page when pre-existing IDs are entered, this time with an error for the user
+
+
     @cherrypy.expose
-    def generateStudent(self, rollno, pr, name, gpa, creditHours, gender, phone):
+    def generateStudent(self, rollno, pr, fname, lname, gpa, creditHours, gender, phone):
         conn = sqlite3.connect(databaseName)
         c = conn.cursor()
         for row in c.execute("SELECT RollNo from Students"):
@@ -229,6 +212,7 @@ class StudentManagement(object):
                 print("Invalid ID!")
                 return self.new(errorValue="A student with ID #" + str(rollno) + " already exists.")
         # If we have a unique ID, then we add the student to the database via SQL and return to the front page
+        name = " ".join([fname, lname])
         c.execute("INSERT INTO Students VALUES ('"
                   + str(name) + "','"
                   + str(rollno) + "','"

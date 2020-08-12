@@ -1,5 +1,6 @@
 import cherrypy
 
+
 SESSION_KEY = '_cp_username'
 
 
@@ -11,13 +12,6 @@ def check_credentials(username, password):
         return None
     else:
         return "Incorrect username or password."
-
-    # An example implementation which uses an ORM could be:
-    # u = User.get(username)
-    # if u is None:
-    #     return u"Username %s is unknown to me." % username
-    # if u.password != md5.new(password).hexdigest():
-    #     return u"Incorrect password"
 
 
 def check_auth(*args, **kwargs):
@@ -41,8 +35,7 @@ cherrypy.tools.auth = cherrypy.Tool('before_handler', check_auth)
 
 
 def require(*conditions):
-    """A decorator that appends conditions to the auth.require config
-    variable."""
+    """A decorator that appends conditions to the auth.require config variable."""
 
     def decorate(f):
         if not hasattr(f, '_cp_config'):
@@ -65,7 +58,7 @@ def require(*conditions):
 def member_of(groupname):
     def check():
         # replace with actual check if <username> is in <groupname>
-        return cherrypy.request.login == 'joe' and groupname == 'admin'
+        return cherrypy.request.login == 'mzfr' and groupname == 'admin'
 
     return check
 
@@ -114,38 +107,52 @@ class AuthController(object):
 
     def get_loginform(self, username, msg="Enter login information", from_page="/"):
         return """
-        <html>
+        <html lang="en">
             <head>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-            <style type="text/css">
-            .box{
-                width:600px;
-                margin:0 auto;
-                border:1px solid #ccc;
-            }
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Student Management System - Login</title>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+            <style>
+                .login-form {
+                    width: 340px;
+                    margin: 50px auto;
+                }
+                .login-form form {
+                    margin-bottom: 15px;
+                    background: #f7f7f7;
+                    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+                    padding: 30px;
+                }
+                .login-form h2 {
+                    margin: 0 0 15px;
+                }
+                .form-control, .btn {
+                    min-height: 38px;
+                    border-radius: 2px;
+                }
+                .btn {        
+                    font-size: 15px;
+                    font-weight: bold;
+                }
             </style>
             </head>
             <body>
-                <div class="form-group">
-                    <h3 align="center">Sign In</h3>
-                </div>
-        
-                <form align="center" method="post" action="/auth/login">
-                    
-                <input type="hidden" name="from_page" value="%(from_page)s" />
-            %(msg)s<br />
-        
-                <div class="form-group">
-                    Username: <input type="text" name="username" value="%(username)s" /><br />
-                </div>
-                <div class="form-group">
-                    Password: <input type="password" name="password" /><br />
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Log in" />
-                </div>
+            <div class="login-form">        
+                <form method="post" action="/auth/login">
+                    <input type="hidden" name="from_page" value="%(from_page)s" /> %(msg)s <br/>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Username" required="required" name="username" value="%(username)s" /><br />
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" placeholder="Password" required="required" name="password" /><br />
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-block" type="submit">Log In</button>
+                    </div>
                 </form>
             </body>
         </html>""" % locals()
