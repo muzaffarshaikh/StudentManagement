@@ -465,7 +465,7 @@ class StudentManagement(object):
                         """
                 for row in c.execute(
                         "select FirstName, LastName, RollNo, GPA, Credit, Gender, Phone, CourseName from Students s, Course c WHERE s.CourseId=c.CourseId and RollNo = " + str(
-                            rollno)):
+                                rollno)):
                     form = """
                                 <div float:"right">
                                 <form method="post" action="updateStudent">
@@ -520,11 +520,11 @@ class StudentManagement(object):
         return self.update(errorValue="There is no student with an Roll Number #" + str(rollno) + ".")
 
     @cherrypy.expose
-    def updateStudent(self, rollno, fname, lname, gpa, creditHours, gender, phone):
+    def updateStudent(self, rollno, fname, lname, gpa, creditHours, gender, phone, course):
         conn = sqlite3.connect(databaseName)
         c = conn.cursor()
         c.execute(
-            "update Students set FirstName='" + fname + "', LastName='" + lname + "', GPA='" + gpa + "', Credit='" + creditHours + "', Gender='" + gender + "', Phone='" + phone + "' where RollNo='" + rollno)
+            "update Students set FirstName='" + fname + "', LastName='" + lname + "', GPA='" + gpa + "', Credit='" + creditHours + "', Gender='" + gender + "', Phone='" + phone + "', Course='" + course + " where RollNo='" + rollno)
         conn.commit()
         conn.close()
 
