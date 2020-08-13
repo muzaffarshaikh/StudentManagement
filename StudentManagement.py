@@ -41,7 +41,7 @@ class StudentManagement(object):
                 """ + self.generateStudentTable() + """
                 <footer class="page-footer font-small blue">
                   <div class="footer-copyright text-center py-3">© 2020 Copyright:
-                    <a href="http://localhost:8080"> smsystem.com </a>Developed By : EMZEE
+                    <a href="http://localhost:8080"> smsystem.com </a>
                   </div>
                 </footer>
             </body>
@@ -75,16 +75,16 @@ class StudentManagement(object):
         """
         conn = sqlite3.connect(databaseName)
         c = conn.cursor()
-        for row in c.execute("SELECT * from Students"):
+        for row in c.execute("SELECT * from Students order by RollNo"):
             rowData = """
                 <tbody>
                     <tr>
-                        <td align="center">""" + str(row[1]) + """</td>
-                        <td align="center">""" + str(row[0]) + """</td>
                         <td align="center">""" + str(row[2]) + """</td>
+                        <td align="center">""" + str(row[0]) + """ """ + str(row[1]) + """</td>
                         <td align="center">""" + str(row[3]) + """</td>
                         <td align="center">""" + str(row[4]) + """</td>
                         <td align="center">""" + str(row[5]) + """</td>
+                        <td align="center">""" + str(row[6]) + """</td>
                     </tr>
                 </tbody>
             """
@@ -219,9 +219,9 @@ class StudentManagement(object):
                 print("Invalid ID!")
                 return self.new(errorValue="A student with ID #" + str(rollno) + " already exists.")
         # If we have a unique ID, then we add the student to the database via SQL and return to the front page
-        name = " ".join([fname, lname])
         c.execute("INSERT INTO Students VALUES ('"
-                  + str(name) + "','"
+                  + str(fname) + "','"
+                  + str(lname) + "','"
                   + str(rollno) + "','"
                   + str(gpa) + "','"
                   + str(creditHours) + "','"
@@ -306,7 +306,7 @@ class StudentManagement(object):
     def update(self, errorValue=""):
         optionalString = ""
         if errorValue != "":
-            optionalString = """<font color="red">""" + errorValue + """</font><br>"""
+            optionalString = """<font color="black">""" + errorValue + """</font><br>"""
 
         return """
             <html>
@@ -360,72 +360,6 @@ class StudentManagement(object):
                     """ + optionalString + """
                     </div>
                 </div>
-                <div style="width: 40%; float:left">
-                    <div class="margin">
-                <h3><b>Update Details</b></h3>
-                <br>
-                    <form method="post" action="updateStudent">
-                    <div class="form-row">
-                        <div class="form-group ">
-                            <label>First Name:</label>
-                            <input type="text" class="form-control" placeholder="First name" name="fname" required>
-                        </div>
-                        <div class="form-group ">
-                            <label>Last Name:</label>
-                            <input type="text" class="form-control" placeholder="Last name" name="lname" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Roll. No</label>
-                            <input type="text" class="form-control" placeholder="Roll No." name="rollno" required>
-                        </div>
-                        <div class="form-group">
-                            <label>GPA</label>
-                            <input type="text" class="form-control" placeholder="GPA" name="gpa" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Credit Hours</label>
-                            <input type="text" class="form-control" placeholder="Credit Hours" name="creditHours" required>
-                        </div>
-                        <div>
-                        <label>Gender</label><br>
-                            <input type="radio" id="Male" name="gender" value="Male">
-                            <label for="male">Male</label><br>
-                            <input type="radio" id="Female" name="gender" value="Female">
-                            <label for="female">Female</label><br>
-                            <input type="radio" id="Other" name="gender" value="Other">
-                            <label for="other">Other</label>
-                        <div>
-                        <br>
-                        <div class="form-group">
-                        <label>Course</label>
-                             <select name="course" id="course" class="form-control">
-                              <option disabled selected value> -- Select a Course -- </option>
-                              <option value="1">MSc. I.T.</option>
-                              <option value="2">BSc. CS</option>
-                              <option value="3">BVoc.</option>
-                              <option value="4">Literature</option>
-                              <option value="5.">Communication Skills</option>
-                              <option value="6">Drama</option>
-                              <option value="7">Probability Statistics</option>
-                              <option value="8">Data Analytics</option>
-                              <option value="9">Calculus</option>
-                              <option value="10">Oceonography</option>
-                              <option value="11">Geomorphology</option>
-                              <option value="12">Astro Physics</option>
-                              <option value="13">Quantum Physics</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Mobile No.</label>
-                            <input type="text" class="form-control" placeholder="Enter Mobile Number" name="phone" min="10" max="10" required>
-                        </div>
-                    </div>
-                        <button type="submit" value="Submit" class="btn btn-primary" style="float: right;">Update</button>
-                        <br>
-                        <br><br><br>
-                    </form>
-                </div>
-                </div>
             </body></html>"""
 
     @cherrypy.expose
@@ -434,7 +368,7 @@ class StudentManagement(object):
         c = conn.cursor()
         for row in c.execute("SELECT RollNo from Students"):
             if int(row[0]) == int(rollno):
-                table = """
+                html = """
                         <html>
                             <head>
                               <title>Bootstrap Example</title>
@@ -445,97 +379,71 @@ class StudentManagement(object):
                               <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
                             </head>
                             <body style="background-color:#e6ded5;">
-                                <div>
-                                <table class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr class="info">
-                                            <th align="center">Roll No.</th>
-                                            <th align="center">Name</th>
-                                            <th align="center">GPA</th>
-                                            <th align="center">Credit Hours</th>
-                                            <th align="center">Gender</th>
-                                            <th align="center">Phone</th>
-                                            <th align="center">Operation</th>
-
-                                        </tr>
-                                    </thead>
                         """
-                for row in c.execute("select * from Students WHERE RollNo = " + str(rollno)):
-                    rowData = """
-                                <tbody>
-                                    <tr>
-                                        <td align="center">""" + str(row[0]) + """</td>
-                                        <td align="center">""" + str(row[1]) + """</td>
-                                        <td align="center">""" + str(row[2]) + """</td>
-                                        <td align="center">""" + str(row[3]) + """</td>
-                                        <td align="center">""" + str(row[4]) + """</td>
-                                        <td align="center">""" + str(row[5]) + """</td>
-                                        <td align="center"><button onClick="getDataForUpdate">Edit</button></td>
-                                    </tr>
-                                </tbody>
-                                
+                for row in c.execute(
+                        "select FirstName, LastName, RollNo, GPA, Credit, Gender, Phone, CourseName from Students s, Course c WHERE s.CourseId=c.CourseId and RollNo = " + str(rollno)):
+                    form = """
+                                <div float:"right">
+                                <form method="post" action="updateStudent">
+                                    <div class="form-row">
+                                        <div class="form-group ">
+                                        <div class="form-group">
+                                            <label>Roll. No</label>
+                                            <input type="text" class="form-control" value=""" + str(row[2]) + """ name="rollno" required disabled>
+                                        </div>
+                                            <label>First Name:</label>
+                                            <input type="text" class="form-control" value=""" + str(row[0]) + """ name="fname" required>
+                                        </div>
+                                        </div class="form-group">
+                                            <label>Last Name:</label>
+                                            <input type="text" class="form-control" value=""" + str(row[1]) + """ name="lname" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>GPA</label>
+                                            <input type="text" class="form-control" value=""" + str(row[3]) + """ name="gpa" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Credit Hours</label>
+                                            <input type="text" class="form-control" value=""" + str(row[4]) + """ name="creditHours" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Gender</label>
+                                            <input type="text" class="form-control" value=""" + str(row[5]) + """ name="gender" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Mobile No.</label>
+                                            <input type="text" class="form-control" value=""" + str(row[6]) + """ name="phone" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Course</label>
+                                            <input type="text" class="form-control" value=""" + str(row[7]) + """ name="course" required disabled>
+                                        </div>
+                                        
+                                        <button type="submit" value="Submit" class="btn btn-primary" style="float: right;">Update</button>
+                                    </div>
+                                        <br><br><br><br><br><br>
+                                    </form>
+                                </div>
+                                </table>
+                                </div>
                             """
-                table += rowData
+                html += form
                 conn.commit()
                 conn.close()
-                return self.update(table + "</table></div></body></html>")
+                return self.update(html + "</body></html>")
 
             # If we never find a student with rollno, we reload the "delete" page with an error
         return self.update(errorValue="There is no student with an Roll Number #" + str(rollno) + ".")
 
     @cherrypy.expose
-    def generateStudentUpdateTable(self):
-        table = """
-                <html>
-                    <head>
-                      <title>Bootstrap Example</title>
-                      <meta charset="utf-8">
-                      <meta name="viewport" content="width=device-width, initial-scale=1">
-                      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-                      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-                    </head>
-                    <body>
-                        <div>
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr class="info">
-                                    <th align="center">Roll No.</th>
-                                    <th align="center">Name</th>
-                                    <th align="center">GPA</th>
-                                    <th align="center">Credit Hours</th>
-                                    <th align="center">Gender</th>
-                                    <th align="center">Phone</th>
-                                    <th align="center">CourseID</th>
-                                    <th align="center">Operation</th>
-                                </tr>
-                            </thead>
-                """
-        query = """select * from Students"""
+    def updateStudent(self, rollno, fname, lname, gpa, creditHours, gender, phone):
         conn = sqlite3.connect(databaseName)
         c = conn.cursor()
-        for row in c.execute(query):
-            rowData = """
-                            <tbody>
-                                <tr>
-                                    <td align="center">""" + str(row[1]) + """</td>
-                                    <td align="center">""" + str(row[0]) + """</td>
-                                    <td align="center">""" + str(row[2]) + """</td>
-                                    <td align="center">""" + str(row[3]) + """</td>
-                                    <td align="center">""" + str(row[4]) + """</td>
-                                    <td align="center">""" + str(row[5]) + """</td>
-                                    <td align="center">""" + str(row[6]) + """</td>
-                                    <td align="center"><button>Update</button></td>
-                                </tr>
-                            </tbody>
-                        """
-            table += rowData
+        c.execute("update Students set FirstName='" + fname + "', LastName='" + lname + "', GPA='" + gpa + "', Credit='" + creditHours + "', Gender='" + gender + "', Phone='" + phone + "' where RollNo='" + rollno)
+        conn.commit()
         conn.close()
-        return table + """
-                    </table>
-                </div>
-            </body>
-        </html>"""
+
+        return self.index
 
     @cherrypy.expose
     def department(self):
@@ -601,21 +509,17 @@ class StudentManagement(object):
                                 </tr>
                             </thead>
                 """
-
-        query = """SELECT RollNo, Name, DeptName, CourseName from Students s, Course c, Department d where c.CourseId=s.CourseId and d.DeptId=c.DeptId"""
+        query = """SELECT RollNo, FirstName, LastName, DeptName, CourseName from Students s, Course c, Department d where c.CourseId=s.CourseId and d.DeptId=c.DeptId order by d.DeptName"""
         c.execute(query)
         result = c.fetchall()
         for row in result:
             rowData = """
                         <tbody>
                             <tr>
-
                                 <td align="center">""" + str(row[0]) + """</td>
-                                <td align="center">""" + str(row[1]) + """</td>
-                                <td align="center">""" + str(row[2]) + """</td>
+                                <td align="center">""" + str(row[1]) + """ """ + str(row[2]) + """</td>
                                 <td align="center">""" + str(row[3]) + """</td>
-                                
-
+                                <td align="center">""" + str(row[4]) + """</td>
                             </tr>
                         </tbody>
                     """
