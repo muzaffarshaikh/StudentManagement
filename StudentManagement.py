@@ -19,7 +19,7 @@ class StudentManagement(object):
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
                 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
             </head>
-            <body>
+            <body style="background-color:#e6ded5;">
                 <nav class="navbar navbar-inverse">
                     <div class="container-fluid">
                         <div class="navbar-header">
@@ -39,6 +39,11 @@ class StudentManagement(object):
                 </nav>
                 <br>
                 """ + self.generateStudentTable() + """
+                <footer class="page-footer font-small blue">
+                  <div class="footer-copyright text-center py-3">© 2020 Copyright:
+                    <a href="http://localhost:8080"> smsystem.com </a>Developed By : EMZEE
+                  </div>
+                </footer>
             </body>
         </html>"""
 
@@ -54,7 +59,7 @@ class StudentManagement(object):
               <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
               <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
             </head>
-            <body>
+            <body style="background-color:#e6ded5;">
                 <div class="container">
                 <table class="table table-bordered table-striped">
                     <thead>
@@ -108,9 +113,12 @@ class StudentManagement(object):
             div.margin {
               margin-left: 50px;
             }
+            body {
+              background-image: url('background.png');
+            }
             </style>
             </head>
-            <body>
+            <body style="background-color:#e6ded5;">
             <nav class="navbar navbar-inverse">
                     <div class="container-fluid">
                         <div class="navbar-header">
@@ -128,6 +136,7 @@ class StudentManagement(object):
                         </ul>
                     </div>
                 </nav>
+                
                 <div style="width: 50%; float:left">
 
                 <div class="margin">
@@ -164,6 +173,26 @@ class StudentManagement(object):
                             <input type="radio" id="Other" name="gender" value="Other">
                             <label for="other">Other</label>
                         <div>
+                        <br>
+                        <div class="form-group">
+                        <label>Course</label>
+                             <select name="course" id="course" class="form-control">
+                              <option disabled selected value> -- Select a Course -- </option>
+                              <option value="1">MSc. I.T.</option>
+                              <option value="2">BSc. CS</option>
+                              <option value="3">BVoc.</option>
+                              <option value="4">Literature</option>
+                              <option value="5.">Communication Skills</option>
+                              <option value="6">Drama</option>
+                              <option value="7">Probability Statistics</option>
+                              <option value="8">Data Analytics</option>
+                              <option value="9">Calculus</option>
+                              <option value="10">Oceonography</option>
+                              <option value="11">Geomorphology</option>
+                              <option value="12">Astro Physics</option>
+                              <option value="13">Quantum Physics</option>
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label>Mobile No.</label>
                             <input type="text" class="form-control" placeholder="Enter Mobile Number" name="phone" required>
@@ -181,7 +210,7 @@ class StudentManagement(object):
         """
 
     @cherrypy.expose
-    def createStudent(self, rollno, fname, lname, gpa, creditHours, gender, phone):
+    def createStudent(self, rollno, fname, lname, gpa, creditHours, gender, phone, course):
         conn = sqlite3.connect(databaseName)
         c = conn.cursor()
         for row in c.execute("SELECT RollNo from Students"):
@@ -197,7 +226,8 @@ class StudentManagement(object):
                   + str(gpa) + "','"
                   + str(creditHours) + "','"
                   + str(gender) + "','"
-                  + str(phone) + "')"
+                  + str(phone) + "','"
+                  + str(course) + "')"
                   )
         conn.commit()
         conn.close()
@@ -242,7 +272,7 @@ class StudentManagement(object):
                         </ul>
                     </div>
                 </nav>
-                <body>
+                <body style="background-color:#e6ded5;">
                 
             <div style="width: 40%; float:left">
                 <div class="margin">
@@ -289,7 +319,9 @@ class StudentManagement(object):
                     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
                 <style>
                 div.margin {
-                  margin-left: 50px;
+                  margin-left: 65px;
+                  margin-right: 80px;
+                  
                 }
                 </style>
                 </head>
@@ -310,11 +342,11 @@ class StudentManagement(object):
                             </ul>
                         </div>
                     </nav>
-                    <body>
+                    <body style="background-color:#e6ded5;">
 
-                <div style="width: 30%; float:left">
+                <div style="width: 60%; float:left">
                     <div class="margin">
-                     <form method="post" action="search">""" + optionalString + """
+                     <form method="post" action="searchStudent">
                         <h3><b>Student Info. Update</b></h3>
                           <div class="input-group">
                             <input type="text" class="form-control" placeholder="Enter Roll. No." name="rollno" required>
@@ -325,52 +357,185 @@ class StudentManagement(object):
                             </div>
                           </div>
                     </form>
-                    """ + self.generateStudentUpdateTable() + """
-
+                    """ + optionalString + """
                     </div>
+                </div>
+                <div style="width: 40%; float:left">
+                    <div class="margin">
+                <h3><b>Update Details</b></h3>
+                <br>
+                    <form method="post" action="updateStudent">
+                    <div class="form-row">
+                        <div class="form-group ">
+                            <label>First Name:</label>
+                            <input type="text" class="form-control" placeholder="First name" name="fname" required>
+                        </div>
+                        <div class="form-group ">
+                            <label>Last Name:</label>
+                            <input type="text" class="form-control" placeholder="Last name" name="lname" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Roll. No</label>
+                            <input type="text" class="form-control" placeholder="Roll No." name="rollno" required>
+                        </div>
+                        <div class="form-group">
+                            <label>GPA</label>
+                            <input type="text" class="form-control" placeholder="GPA" name="gpa" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Credit Hours</label>
+                            <input type="text" class="form-control" placeholder="Credit Hours" name="creditHours" required>
+                        </div>
+                        <div>
+                        <label>Gender</label><br>
+                            <input type="radio" id="Male" name="gender" value="Male">
+                            <label for="male">Male</label><br>
+                            <input type="radio" id="Female" name="gender" value="Female">
+                            <label for="female">Female</label><br>
+                            <input type="radio" id="Other" name="gender" value="Other">
+                            <label for="other">Other</label>
+                        <div>
+                        <br>
+                        <div class="form-group">
+                        <label>Course</label>
+                             <select name="course" id="course" class="form-control">
+                              <option disabled selected value> -- Select a Course -- </option>
+                              <option value="1">MSc. I.T.</option>
+                              <option value="2">BSc. CS</option>
+                              <option value="3">BVoc.</option>
+                              <option value="4">Literature</option>
+                              <option value="5.">Communication Skills</option>
+                              <option value="6">Drama</option>
+                              <option value="7">Probability Statistics</option>
+                              <option value="8">Data Analytics</option>
+                              <option value="9">Calculus</option>
+                              <option value="10">Oceonography</option>
+                              <option value="11">Geomorphology</option>
+                              <option value="12">Astro Physics</option>
+                              <option value="13">Quantum Physics</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Mobile No.</label>
+                            <input type="text" class="form-control" placeholder="Enter Mobile Number" name="phone" min="10" max="10" required>
+                        </div>
+                    </div>
+                        <button type="submit" value="Submit" class="btn btn-primary" style="float: right;">Update</button>
+                        <br>
+                        <br><br><br>
+                    </form>
+                </div>
                 </div>
             </body></html>"""
 
     @cherrypy.expose
-    def generateStudentUpdateTable(self, param, input):
-        if param == "update":
-            sleep(0.05)
-            with sqlite3.connect(databaseName) as c:
-                r = c.execute("SELECT * FROM benutzer")
-                response = "<table width='100%' class='table table-striped table-bordered'" \
-                           "cellspacing='0'><tr><td>Nr</td><td>Firstname</td><td>Lastname</td><td>Address</td><td>Qualification</td>" \
-                           "<td>Email</td><td>Edit</td></tr>"
-                while True:
-                    row = r.fetchone()
-                    if row is None:
-                        break
-                    response += "<tr><td>" + str(row[0]) + "</td><td>" + row[1] + "</td><td>" + row[2] + "</td><td>" + \
-                                row[3] + "</td><td>" + row[4] + "</td><td>" \
-                                + row[5] + "</td><td> <button onClick='updateBenutzer(" + str(row[0]) + ")'>Edit" \
-                                                                                                        "</button></td></tr>"
-                response += '</table>'
-            return response
+    def searchStudent(self, rollno):
+        conn = sqlite3.connect(databaseName)
+        c = conn.cursor()
+        for row in c.execute("SELECT RollNo from Students"):
+            if int(row[0]) == int(rollno):
+                table = """
+                        <html>
+                            <head>
+                              <title>Bootstrap Example</title>
+                              <meta charset="utf-8">
+                              <meta name="viewport" content="width=device-width, initial-scale=1">
+                              <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+                              <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                              <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+                            </head>
+                            <body style="background-color:#e6ded5;">
+                                <div>
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr class="info">
+                                            <th align="center">Roll No.</th>
+                                            <th align="center">Name</th>
+                                            <th align="center">GPA</th>
+                                            <th align="center">Credit Hours</th>
+                                            <th align="center">Gender</th>
+                                            <th align="center">Phone</th>
+                                            <th align="center">Operation</th>
 
-        if param == "getBenutzer":
-            with sqlite3.connect(databaseName) as c:
-                r = c.execute("SELECT * FROM benutzer WHERE nr=" + input)
-                while True:
-                    row = r.fetchone()
-                    if row is None:
-                        break
-                    response = str(row[0]) + "#" + row[1] + "#" + row[2] + "#" + row[3] + "#" + row[4] + "#" + row[
-                        5] + "#" + row[6];
-            return response
+                                        </tr>
+                                    </thead>
+                        """
+                for row in c.execute("select * from Students WHERE RollNo = " + str(rollno)):
+                    rowData = """
+                                <tbody>
+                                    <tr>
+                                        <td align="center">""" + str(row[0]) + """</td>
+                                        <td align="center">""" + str(row[1]) + """</td>
+                                        <td align="center">""" + str(row[2]) + """</td>
+                                        <td align="center">""" + str(row[3]) + """</td>
+                                        <td align="center">""" + str(row[4]) + """</td>
+                                        <td align="center">""" + str(row[5]) + """</td>
+                                        <td align="center"><button onClick="getDataForUpdate">Edit</button></td>
+                                    </tr>
+                                </tbody>
+                                
+                            """
+                table += rowData
+                conn.commit()
+                conn.close()
+                return self.update(table + "</table></div></body></html>")
 
-        if param == "updateBenutzer":
-            with sqlite3.connect(databaseName) as c:
-                liste = input.split('#')
-                c.execute("UPDATE benutzer SET firstname='" + liste[1] + "',lastname='"
-                          + liste[2] + "',address='" + liste[3] + "',qualification='" + liste[4] + "',email='" + liste[
-                              5] + "',password='" + liste[6] + "' WHERE nr=" + liste[0])
-                return "Inserted successful."
+            # If we never find a student with rollno, we reload the "delete" page with an error
+        return self.update(errorValue="There is no student with an Roll Number #" + str(rollno) + ".")
 
-        return "Ungültige Anfrage"
+    @cherrypy.expose
+    def generateStudentUpdateTable(self):
+        table = """
+                <html>
+                    <head>
+                      <title>Bootstrap Example</title>
+                      <meta charset="utf-8">
+                      <meta name="viewport" content="width=device-width, initial-scale=1">
+                      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+                      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+                    </head>
+                    <body>
+                        <div>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr class="info">
+                                    <th align="center">Roll No.</th>
+                                    <th align="center">Name</th>
+                                    <th align="center">GPA</th>
+                                    <th align="center">Credit Hours</th>
+                                    <th align="center">Gender</th>
+                                    <th align="center">Phone</th>
+                                    <th align="center">CourseID</th>
+                                    <th align="center">Operation</th>
+                                </tr>
+                            </thead>
+                """
+        query = """select * from Students"""
+        conn = sqlite3.connect(databaseName)
+        c = conn.cursor()
+        for row in c.execute(query):
+            rowData = """
+                            <tbody>
+                                <tr>
+                                    <td align="center">""" + str(row[1]) + """</td>
+                                    <td align="center">""" + str(row[0]) + """</td>
+                                    <td align="center">""" + str(row[2]) + """</td>
+                                    <td align="center">""" + str(row[3]) + """</td>
+                                    <td align="center">""" + str(row[4]) + """</td>
+                                    <td align="center">""" + str(row[5]) + """</td>
+                                    <td align="center">""" + str(row[6]) + """</td>
+                                    <td align="center"><button>Update</button></td>
+                                </tr>
+                            </tbody>
+                        """
+            table += rowData
+        conn.close()
+        return table + """
+                    </table>
+                </div>
+            </body>
+        </html>"""
 
     @cherrypy.expose
     def department(self):
@@ -384,7 +549,7 @@ class StudentManagement(object):
                         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
                         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
                     </head>
-                    <body>
+                    <body style="background-color:#e6ded5;">
                         <nav class="navbar navbar-inverse">
                             <div class="container-fluid">
                                 <div class="navbar-header">
@@ -409,6 +574,8 @@ class StudentManagement(object):
 
     @cherrypy.expose
     def generateDeptTable(self):
+        conn = sqlite3.connect(databaseName)
+        c = conn.cursor()
         table = """
                 <html>
                     <head>
@@ -419,7 +586,9 @@ class StudentManagement(object):
                       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
                       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
                     </head>
-                    <body>
+                    <body style="background-color:#e6ded5;"> 
+                    <div>
+                    </div>
                         <div class="container">
                         <table class="table table-bordered table-striped">
                             <thead>
@@ -427,15 +596,13 @@ class StudentManagement(object):
 
                                     <th align="center">Roll No</th>
                                     <th align="center">Name</th>
-                                    <th align="center">CN</th>
-
-
+                                    <th align="center">Department</th>
+                                    <th align="center">Course</th>
                                 </tr>
                             </thead>
                 """
-        conn = sqlite3.connect(databaseName)
-        c = conn.cursor()
-        query = """SELECT RollNo, Name, CourseName from Students s, Course c where c.CourseId=s.CourseId"""
+
+        query = """SELECT RollNo, Name, DeptName, CourseName from Students s, Course c, Department d where c.CourseId=s.CourseId and d.DeptId=c.DeptId"""
         c.execute(query)
         result = c.fetchall()
         for row in result:
@@ -446,6 +613,7 @@ class StudentManagement(object):
                                 <td align="center">""" + str(row[0]) + """</td>
                                 <td align="center">""" + str(row[1]) + """</td>
                                 <td align="center">""" + str(row[2]) + """</td>
+                                <td align="center">""" + str(row[3]) + """</td>
                                 
 
                             </tr>
