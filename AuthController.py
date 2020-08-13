@@ -138,22 +138,29 @@ class AuthController(object):
                     font-size: 15px;
                     font-weight: bold;
                 }
+
+                
             </style>
             </head>
             <body>
-            <div class="login-form">        
-                <form method="post" action="/auth/login">
-                    <input type="hidden" name="from_page" value="%(from_page)s" /> %(msg)s <br/>
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Username" required="required" name="username" value="%(username)s" /><br />
-                    </div>
-                    <div class="form-group">
-                        <input type="password" class="form-control" placeholder="Password" required="required" name="password" /><br />
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-primary btn-block" type="submit">Log In</button>
-                    </div>
-                </form>
+            <h2 align="center"><b>Student Management System</b></h2>   
+                <div class="login-form">    
+
+                    <form method="post" action="/auth/login">
+                    <h3 align="center"><b>LOG IN<b></h3>
+                        <input type="hidden" name="from_page" value="%(from_page)s" /> %(msg)s <br/>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Username" required="required" name="username" value="%(username)s" /><br />
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Password" required="required" name="password" /><br />
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary btn-block" type="submit">Log In</button>
+                        </div>
+                    </form>
+                 </div>
+                    
             </body>
         </html>""" % locals()
 

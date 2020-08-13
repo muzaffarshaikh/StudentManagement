@@ -8,6 +8,89 @@ databaseName = "Database/students.db"
 class StudentManagement(object):
 
     @cherrypy.expose
+    def login(self, errorValue=""):
+        optionalString = ""
+        if errorValue != "":
+            optionalString = """<font color="red">""" + errorValue + """</font><br>"""
+        return """
+        <html lang="en">
+            <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Student Management System - Login</title>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+            <style>
+                .login-form {
+                    width: 340px;
+                    margin: 50px auto;
+                }
+                .login-form form {
+                    margin-bottom: 15px;
+                    background: #f7f7f7;
+                    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+                    padding: 30px;
+                }
+                .login-form h2 {
+                    margin: 0 0 15px;
+                }
+                .form-control, .btn {
+                    min-height: 38px;
+                    border-radius: 2px;
+                }
+                .btn {        
+                    font-size: 15px;
+                    font-weight: bold;
+                }
+
+                
+            </style>
+            </head>
+            <body>
+            <h2 align="center"><b>Student Management System</b></h2>   
+                <div class="login-form">    
+
+                    <form method="post" action="/auth/login">
+                    <h3 align="center"><b>LOG IN<b></h3>
+                        <input type="hidden" name="from_page" value="%(from_page)s" /><br/>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Username" required="required" name="username" /><br />
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Password" required="required" name="password" /><br />
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary btn-block" type="submit">Log In</button>
+                        </div>
+                    </form>
+                 </div>
+                    
+            </body>
+        </html>"""
+
+    @cherrypy.expose
+    def userLogin(self, username, password):
+        conn = sqlite3.connect(databaseName)
+        c = conn.cursor()
+        query = conn.execute("select Username from Users")
+
+        for row in query:
+            if username in row:
+                print("%s" % username)
+                pas = conn.execute("SELECT Password FROM Users WHERE Username = %s" % username)
+
+                if password in pas:
+                    return self.index()
+                else:
+                    return self.login(errorValue="Incorrect Password for" + username + ".")
+                conn.close()
+                return
+        print
+        "Incorrect ID! If you are not a user, please register here."
+
+    @cherrypy.expose
     def index(self):
         return """
         <html>
@@ -381,7 +464,8 @@ class StudentManagement(object):
                             <body style="background-color:#e6ded5;">
                         """
                 for row in c.execute(
-                        "select FirstName, LastName, RollNo, GPA, Credit, Gender, Phone, CourseName from Students s, Course c WHERE s.CourseId=c.CourseId and RollNo = " + str(rollno)):
+                        "select FirstName, LastName, RollNo, GPA, Credit, Gender, Phone, CourseName from Students s, Course c WHERE s.CourseId=c.CourseId and RollNo = " + str(
+                            rollno)):
                     form = """
                                 <div float:"right">
                                 <form method="post" action="updateStudent">
@@ -439,7 +523,8 @@ class StudentManagement(object):
     def updateStudent(self, rollno, fname, lname, gpa, creditHours, gender, phone):
         conn = sqlite3.connect(databaseName)
         c = conn.cursor()
-        c.execute("update Students set FirstName='" + fname + "', LastName='" + lname + "', GPA='" + gpa + "', Credit='" + creditHours + "', Gender='" + gender + "', Phone='" + phone + "' where RollNo='" + rollno)
+        c.execute(
+            "update Students set FirstName='" + fname + "', LastName='" + lname + "', GPA='" + gpa + "', Credit='" + creditHours + "', Gender='" + gender + "', Phone='" + phone + "' where RollNo='" + rollno)
         conn.commit()
         conn.close()
 
